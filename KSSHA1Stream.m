@@ -13,8 +13,10 @@
 
 - (id)init;
 {
-    [super init];
-    CC_SHA1_Init(&_ctx);
+    if (self = [super init])
+    {
+        CC_SHA1_Init(&_ctx);
+    }
     return self;
 }
 
