@@ -110,7 +110,7 @@
 
 + (NSData *)SHA1DigestOfContentsOfURL:(NSURL *)URL;
 {
-    OBPRECONDITION(URL);
+    NSParameterAssert(URL);
     KSSHA1Stream *hasher = [[KSSHA1Stream alloc] initWithURL:URL];
 
     NSData *result;
@@ -129,7 +129,7 @@
             if (length > 0)
             {
                 NSInteger written = [hasher write:buffer maxLength:length];
-                OBASSERT(written == length);
+                NSAssert((written == length), @"KSSHA1Stream is expected to handle all data you pass to it, but didn't this time for some reason");
             }
         }
 
