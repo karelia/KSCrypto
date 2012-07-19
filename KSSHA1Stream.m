@@ -36,7 +36,7 @@
 
 - (NSInteger)write:(const uint8_t *)buffer maxLength:(NSUInteger)len;
 {
-    CC_SHA1_Update(&_ctx, buffer, len);
+    CC_SHA1_Update(&_ctx, buffer, (CC_LONG) len);
     return len;
 }
 
