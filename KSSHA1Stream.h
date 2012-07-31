@@ -45,7 +45,6 @@
 
 @interface KSSHA1Stream (KSURLHashing)
 + (NSData *)SHA1DigestOfContentsOfURL:(NSURL *)URL;
-- (id)initWithURL:(NSURL *)URL;
 @end
 
 
