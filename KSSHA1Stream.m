@@ -111,11 +111,12 @@
 + (NSData *)SHA1DigestOfContentsOfURL:(NSURL *)URL;
 {
     NSParameterAssert(URL);
-    KSSHA1Stream *hasher = [[KSSHA1Stream alloc] initWithURL:URL];
-
+    
     NSData *result;
     if ([URL isFileURL])
     {
+        KSSHA1Stream *hasher = [[KSSHA1Stream alloc] init];
+        
         NSInputStream *stream = [[NSInputStream alloc] initWithFileAtPath:[URL path]];
         [stream open];
 
@@ -137,10 +138,13 @@
         [stream release];
 
         [hasher close];
-        result = [hasher SHA1Digest];
+        result = [[[hasher SHA1Digest] copy] autorelease];
+        [hasher release];
     }
     else
     {
+        KSSHA1Stream *hasher = [[KSSHA1Stream alloc] initWithURL:URL];
+        
         // Run the runloop until done
         while (!(result = [hasher SHA1Digest]))
         {
@@ -148,13 +152,19 @@
         }
 
         // Finish up. Empty hash means load failed
-        if (![result length]) result = nil;
+        if ([result length])
+        {
+            result = [[result copy] autorelease];
+        }
+        else
+        {
+            result = nil;
+        }
+        
+        [hasher release];
     }
 
 
-    // Finish up. Empty hash means load failed
-    result = [[result copy] autorelease];
-    [hasher release];
     return result;
 }
 
