@@ -133,6 +133,7 @@
             }
         }
 
+        [stream close];
         [stream release];
 
         [hasher close];
