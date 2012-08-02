@@ -116,8 +116,12 @@
     if ([URL isFileURL])
     {
         KSSHA1Stream *hasher = [[KSSHA1Stream alloc] init];
-        
+
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6
+        NSInputStream *stream = [[NSInputStream alloc] initWithURL:URL];
+#else
         NSInputStream *stream = [[NSInputStream alloc] initWithFileAtPath:[URL path]];
+#endif
         [stream open];
 
 #define READ_BUFFER_SIZE 64*CC_SHA1_BLOCK_BYTES
