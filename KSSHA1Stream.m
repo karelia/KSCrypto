@@ -124,7 +124,7 @@
 #endif
         [stream open];
 
-#define READ_BUFFER_SIZE 64*CC_SHA1_BLOCK_BYTES
+#define READ_BUFFER_SIZE 2048*CC_SHA1_BLOCK_BYTES   // just experimentation, but bigger has always run faster for me so far
         uint8_t buffer[READ_BUFFER_SIZE];
 
         while ([stream streamStatus] < NSStreamStatusAtEnd)
