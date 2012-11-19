@@ -1,7 +1,25 @@
-KSCrypto
+Features
 ========
 
-Simple wrapper for sha1 hashing files.
+Adapts `NSOutputStream`'s API for use to generate SHA1 digests.
+
+Also provides convenience methods for:
+
+* Directly hashing a lump of data: `-[NSData ks_SHA1Digest]`.
+* Hashing the contents of a URL, even a remote one: `+SHA1DigestOfContentsOfURL:`
+* Converting a digest into a hexadecimal string representation: `+ks_stringFromSHA1Digest:`
+
+Contact
+=======
+
+I'm Mike Abdullah, of [Karelia Software](http://karelia.com). [@mikeabdullah](http://twitter.com/mikeabdullah) on Twitter.
+
+Questions about the code should be left as issues at https://github.com/karelia/KSCrypto or message me on Twitter.
+
+Dependencies
+============
+
+CommonCrypto (and Foundation, obviously).
 
 Licence
 =======
@@ -27,3 +45,16 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Usage
+=====
+
+1. Add `KSSHA1Stream.h` and `KSSHA1Stream.m` to your project. Ideally, make this repo a submodule, but hey, it's your codebase, do whatever you feel like.
+2. Link against `CommonCrypto`
+
+To hash a stream of data:
+
+1. `[[KSSHA1Stream alloc] init]`
+2. Call `-write:maxLength:` as your data arrives. `KSSHA1Stream` promises to always process all bytes passed to it
+3. Call `-close` on the stream
+4. Retrieve the result using the `SHA1Digest` property
