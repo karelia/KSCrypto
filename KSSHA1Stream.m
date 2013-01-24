@@ -178,11 +178,11 @@
 
 - (id)initWithURL:(NSURL *)URL;
 {
-    [self init];
-
-    [NSURLConnection connectionWithRequest:[NSURLRequest requestWithURL:URL]
-                                  delegate:self];
-
+    if (self = [self init])
+    {
+        [NSURLConnection connectionWithRequest:[NSURLRequest requestWithURL:URL]
+                                      delegate:self];
+    }
     return self;
 }
 
