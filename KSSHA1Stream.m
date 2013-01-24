@@ -28,6 +28,19 @@
 #import "KSSHA1Stream.h"
 
 
+@interface KSAsyncSHA1Stream : KSSHA1Stream
+{
+    void (^_completionBlock)(NSData *digest, NSError *error);
+}
+
+- (id)initWithURL:(NSURL *)url completionHandler:(void (^)(NSData *digest, NSError *error))handler __attribute__((nonnull(1,2)));
+
+@end
+
+
+#pragma mark -
+
+
 @implementation KSSHA1Stream
 
 - (id)init;
@@ -176,6 +189,11 @@
     return result;
 }
 
++ (void)SHA1HashContentsOfURL:(NSURL *)url completionHandler:(void (^)(NSData *digest, NSError *error))handler __attribute__((nonnull(1,2)));
+{
+    [[[KSAsyncSHA1Stream alloc] initWithURL:url completionHandler:handler] release];
+}
+
 - (id)initWithURL:(NSURL *)URL;
 {
     if (self = [self init])
@@ -199,6 +217,42 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
     _digest = [[NSData alloc] init];
+}
+
+@end
+
+
+#pragma mark -
+
+
+@implementation KSAsyncSHA1Stream
+
+- (id)initWithURL:(NSURL *)url completionHandler:(void (^)(NSData *digest, NSError *error))handler;
+{
+    // Rely on super's NSURLConnection to retain us
+    if (self = [self initWithURL:url])
+    {
+        _completionBlock = [handler copy];
+    }
+    return self;
+}
+
+- (void)dealloc;
+{
+    [_completionBlock release];
+    [super dealloc];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    [super connectionDidFinishLoading:connection];
+    _completionBlock([self SHA1Digest], nil);
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    [super connection:connection didFailWithError:error];
+    _completionBlock(nil, error);
 }
 
 @end

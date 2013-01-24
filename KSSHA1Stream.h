@@ -44,7 +44,14 @@
 
 
 @interface KSSHA1Stream (KSURLHashing)
+
 + (NSData *)SHA1DigestOfContentsOfURL:(NSURL *)URL;
+
+// Only suitable for calling from threads with a running runloop at present
+// Completion handler is called on an arbitrary thread/queue
+// digest is nil if failed to load for some reason, and then error should give some more info
++ (void)SHA1HashContentsOfURL:(NSURL *)url completionHandler:(void (^)(NSData *digest, NSError *error))handler __attribute__((nonnull(1,2)));
+
 @end
 
 
