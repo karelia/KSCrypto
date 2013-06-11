@@ -100,6 +100,8 @@
 
 + (NSString *)ks_stringFromSHA1Digest:(NSData *)digestData;
 {
+    if (!digestData) return nil;
+    
     static char sHEHexDigits[] = "0123456789abcdef";
     
     unsigned char *digest = (unsigned char *)[digestData bytes];
