@@ -64,7 +64,4 @@
 // Cryptographic hashes
 - (KSSHA1Digest *)ks_SHA1Digest;
 
-- (NSString *)ks_SHA1DigestString;
-+ (NSString *)ks_stringFromSHA1Digest:(NSData *)digest;
-
 @end

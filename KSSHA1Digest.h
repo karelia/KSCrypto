@@ -20,6 +20,7 @@
 + (KSSHA1Digest *)digestWithData:(NSData *)data;  // returns nil if the data isn't valid
 
 - (NSData *)data;
+- (NSString *)description;  // gives a fairly human-friendly version of the digest
 
 - (BOOL)isEqualToSHA1Digest:(KSSHA1Digest *)aDigest;
 

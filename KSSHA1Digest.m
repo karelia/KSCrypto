@@ -38,7 +38,19 @@
 
 - (NSString *)description;
 {
-    return [NSData ks_stringFromSHA1Digest:self.data];
+    static char sHEHexDigits[] = "0123456789abcdef";
+    
+	unsigned char digestString[2 * CC_SHA1_DIGEST_LENGTH];
+    NSUInteger i;
+	for (i=0; i<CC_SHA1_DIGEST_LENGTH; i++)
+	{
+		digestString[2*i]   = sHEHexDigits[_md[i] >> 4];
+		digestString[2*i+1] = sHEHexDigits[_md[i] & 0x0f];
+	}
+    
+	return [[[NSString alloc] initWithBytes:(const char *)digestString
+                                     length:2 * CC_SHA1_DIGEST_LENGTH
+                                   encoding:NSASCIIStringEncoding] autorelease];
 }
 
 #pragma mark Equality

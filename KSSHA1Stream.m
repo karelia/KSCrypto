@@ -97,32 +97,6 @@
     return result;
 }
 
-- (NSString *)ks_SHA1DigestString
-{
-	return [[self ks_SHA1Digest] description];
-}
-
-+ (NSString *)ks_stringFromSHA1Digest:(NSData *)digestData;
-{
-    if (!digestData) return nil;
-    
-    static char sHEHexDigits[] = "0123456789abcdef";
-    
-    unsigned char *digest = (unsigned char *)[digestData bytes];
-    
-	unsigned char digestString[2 * CC_SHA1_DIGEST_LENGTH];
-    NSUInteger i;
-	for (i=0; i<CC_SHA1_DIGEST_LENGTH; i++)
-	{
-		digestString[2*i]   = sHEHexDigits[digest[i] >> 4];
-		digestString[2*i+1] = sHEHexDigits[digest[i] & 0x0f];
-	}
-    
-	return [[[NSString alloc] initWithBytes:(const char *)digestString
-                                     length:2 * CC_SHA1_DIGEST_LENGTH
-                                   encoding:NSASCIIStringEncoding] autorelease];
-}
-
 @end
 
 
