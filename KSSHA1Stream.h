@@ -25,32 +25,33 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import <Foundation/Foundation.h>
-#import <CommonCrypto/CommonDigest.h>
-
+#import "KSSHA1Digest.h"
 
 
 @interface KSSHA1Stream : NSOutputStream
 {
   @private
-    CC_SHA1_CTX _ctx;
-    NSData      *_digest;
+    CC_SHA1_CTX     _ctx;
+    
+    NSStreamStatus  _status;
+    KSSHA1Digest    *_digest;
+    NSError         *_error;
 }
 
 // nil until you call -close
-@property(nonatomic, copy, readonly) NSData *SHA1Digest;
+@property(nonatomic, copy, readonly) KSSHA1Digest *SHA1Digest;
 
 @end
 
 
 @interface KSSHA1Stream (KSURLHashing)
 
-+ (NSData *)SHA1DigestOfContentsOfURL:(NSURL *)URL;
++ (KSSHA1Digest *)SHA1DigestOfContentsOfURL:(NSURL *)URL;
 
 // Only suitable for calling from threads with a running runloop at present
 // Completion handler is called on an arbitrary thread/queue
 // digest is nil if failed to load for some reason, and then error should give some more info
-+ (void)SHA1HashContentsOfURL:(NSURL *)url completionHandler:(void (^)(NSData *digest, NSError *error))handler __attribute__((nonnull(1,2)));
++ (void)SHA1HashContentsOfURL:(NSURL *)url completionHandler:(void (^)(KSSHA1Digest *digest, NSError *error))handler __attribute__((nonnull(1,2)));
 
 @end
 
@@ -61,7 +62,7 @@
 @interface NSData (KSSHA1Stream)
 
 // Cryptographic hashes
-- (NSData *)ks_SHA1Digest;
+- (KSSHA1Digest *)ks_SHA1Digest;
 
 - (NSString *)ks_SHA1DigestString;
 + (NSString *)ks_stringFromSHA1Digest:(NSData *)digest;

@@ -30,10 +30,10 @@
 
 @interface KSAsyncSHA1Stream : KSSHA1Stream
 {
-    void (^_completionBlock)(NSData *digest, NSError *error);
+    void (^_completionBlock)(KSSHA1Digest *digest, NSError *error);
 }
 
-- (id)initWithURL:(NSURL *)url completionHandler:(void (^)(NSData *digest, NSError *error))handler __attribute__((nonnull(1,2)));
+- (id)initWithURL:(NSURL *)url completionHandler:(void (^)(KSSHA1Digest *digest, NSError *error))handler __attribute__((nonnull(1,2)));
 
 @end
 
@@ -48,21 +48,23 @@
     if (self = [super init])
     {
         CC_SHA1_Init(&_ctx);
+        _status = NSStreamStatusOpen;
     }
     return self;
 }
 
 - (void)close;
 {
-    unsigned char digest[CC_SHA1_DIGEST_LENGTH];
-	CC_SHA1_Final(digest, &_ctx);
-
-    _digest = [[NSData alloc] initWithBytes:digest length:CC_SHA1_DIGEST_LENGTH];
+    _digest = [[KSSHA1Digest alloc] initWithSHA1Context:&_ctx];
+    _status = NSStreamStatusClosed;
 }
+
+- (NSStreamStatus)streamStatus; { return _status; }
 
 - (void)dealloc;
 {
     [_digest release];
+    [_error release];
     [super dealloc];
 }
 
@@ -73,6 +75,8 @@
 }
 
 @synthesize SHA1Digest = _digest;
+
+- (NSError *)streamError; { return _error; }
 
 @end
 
@@ -95,7 +99,7 @@
 
 - (NSString *)ks_SHA1DigestString
 {
-	return [[self class] ks_stringFromSHA1Digest:[self ks_SHA1Digest]];
+	return [[self ks_SHA1Digest] description];
 }
 
 + (NSString *)ks_stringFromSHA1Digest:(NSData *)digestData;
@@ -127,11 +131,11 @@
 
 @implementation KSSHA1Stream (KSURLHashing)
 
-+ (NSData *)SHA1DigestOfContentsOfURL:(NSURL *)URL;
++ (KSSHA1Digest *)SHA1DigestOfContentsOfURL:(NSURL *)URL;
 {
     NSParameterAssert(URL);
     
-    NSData *result;
+    KSSHA1Digest *result;
     if ([URL isFileURL])
     {
         KSSHA1Stream *hasher = [[KSSHA1Stream alloc] init];
@@ -174,16 +178,6 @@
             [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
         }
 
-        // Finish up. Empty hash means load failed
-        if ([result length])
-        {
-            result = [[result copy] autorelease];
-        }
-        else
-        {
-            result = nil;
-        }
-        
         [hasher release];
     }
 
@@ -191,7 +185,7 @@
     return result;
 }
 
-+ (void)SHA1HashContentsOfURL:(NSURL *)url completionHandler:(void (^)(NSData *digest, NSError *error))handler __attribute__((nonnull(1,2)));
++ (void)SHA1HashContentsOfURL:(NSURL *)url completionHandler:(void (^)(KSSHA1Digest *digest, NSError *error))handler __attribute__((nonnull(1,2)));
 {
     [[[KSAsyncSHA1Stream alloc] initWithURL:url completionHandler:handler] release];
 }
@@ -218,7 +212,8 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-    _digest = [[NSData alloc] init];
+    _error = [error copy];
+    _status = NSStreamStatusError;
 }
 
 @end
@@ -229,7 +224,7 @@
 
 @implementation KSAsyncSHA1Stream
 
-- (id)initWithURL:(NSURL *)url completionHandler:(void (^)(NSData *digest, NSError *error))handler;
+- (id)initWithURL:(NSURL *)url completionHandler:(void (^)(KSSHA1Digest *digest, NSError *error))handler;
 {
     // Rely on super's NSURLConnection to retain us
     if (self = [self initWithURL:url])
