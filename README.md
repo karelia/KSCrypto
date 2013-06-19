@@ -1,13 +1,13 @@
 Features
 ========
 
-Adapts `NSOutputStream`'s API for use to generate SHA1 digests.
+* Adapts `NSOutputStream`'s API for use to generate SHA1 digests.
+* `KSSHA1Digest` class to encapsulate digests and avoid accidents from comparing them to inappropriate `NSData` instances
 
 Also provides convenience methods for:
 
 * Directly hashing a lump of data: `-[NSData ks_SHA1Digest]`.
 * Hashing the contents of a URL, even a remote one: `+SHA1DigestOfContentsOfURL:`
-* Converting a digest into a hexadecimal string representation: `+ks_stringFromSHA1Digest:`
 
 Contact
 =======
