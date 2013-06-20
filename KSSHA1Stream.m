@@ -107,7 +107,7 @@
 
 @implementation KSSHA1Stream (KSURLHashing)
 
-+ (KSSHA1Digest *)SHA1DigestOfContentsOfURL:(NSURL *)URL;
++ (KSSHA1Digest *)digestOfContentsOfURL:(NSURL *)URL;
 {
     NSParameterAssert(URL);
     
@@ -161,6 +161,8 @@
 
     return result;
 }
+
++ (NSData *)SHA1DigestOfContentsOfURL:(NSURL *)URL; { return [self digestOfContentsOfURL:URL].data; }
 
 + (void)SHA1HashContentsOfURL:(NSURL *)url completionHandler:(void (^)(KSSHA1Digest *digest, NSError *error))handler __attribute__((nonnull(1,2)));
 {

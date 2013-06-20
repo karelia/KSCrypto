@@ -47,7 +47,8 @@
 
 @interface KSSHA1Stream (KSURLHashing)
 
-+ (KSSHA1Digest *)SHA1DigestOfContentsOfURL:(NSURL *)URL;
++ (KSSHA1Digest *)digestOfContentsOfURL:(NSURL *)URL;
++ (NSData *)SHA1DigestOfContentsOfURL:(NSURL *)URL; // backwards compatibility
 
 // Only suitable for calling from threads with a running runloop at present
 // Completion handler is called on an arbitrary thread/queue
