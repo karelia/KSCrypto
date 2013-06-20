@@ -57,15 +57,6 @@
 + (void)hashContentsOfURL:(NSURL *)url completionHandler:(void (^)(KSSHA1Digest *digest, NSError *error))handler __attribute__((nonnull(1,2)));
 + (void)SHA1HashContentsOfURL:(NSURL *)url completionHandler:(void (^)(NSData *digest, NSError *error))handler __attribute__((nonnull(1,2)));
 
-@end
-
-
-#pragma mark -
-
-
-@interface NSData (KSSHA1Stream)
-
-// Cryptographic hashes
-- (KSSHA1Digest *)ks_SHA1Digest;
++ (KSSHA1Digest *)hashData:(NSData *)data;
 
 @end

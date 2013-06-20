@@ -86,25 +86,6 @@
 #pragma mark -
 
 
-@implementation NSData (KSSHA1Stream)
-
-- (NSData *)ks_SHA1Digest
-{
-	KSSHA1Stream *stream = [[KSSHA1Stream alloc] init];
-    [stream write:[self bytes] maxLength:[self length]];
-    [stream close];
-    NSData *result = [[[stream digest] copy] autorelease];
-
-    [stream release];
-    return result;
-}
-
-@end
-
-
-#pragma mark -
-
-
 @implementation KSSHA1Stream (KSURLHashing)
 
 + (KSSHA1Digest *)hashContentsOfURL:(NSURL *)URL;
@@ -174,6 +155,19 @@
     [self hashContentsOfURL:url completionHandler:^(KSSHA1Digest *digest, NSError *error) {
         handler(digest.data, error);
     }];
+}
+
++ (KSSHA1Digest *)hashData:(NSData *)data;
+{
+    if (!data) return nil;
+    
+	KSSHA1Stream *stream = [[KSSHA1Stream alloc] init];
+    [stream write:[data bytes] maxLength:data.length];
+    [stream close];
+    KSSHA1Digest *result = [[[stream digest] copy] autorelease];
+    
+    [stream release];
+    return result;
 }
 
 - (id)initWithURL:(NSURL *)URL;
