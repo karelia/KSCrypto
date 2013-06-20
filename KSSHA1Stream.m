@@ -74,7 +74,9 @@
     return len;
 }
 
-@synthesize SHA1Digest = _digest;
+@synthesize digest = _digest;
+
+- (NSData *)SHA1Digest; { return self.digest.data; }
 
 - (NSError *)streamError; { return _error; }
 
@@ -91,7 +93,7 @@
 	KSSHA1Stream *stream = [[KSSHA1Stream alloc] init];
     [stream write:[self bytes] maxLength:[self length]];
     [stream close];
-    NSData *result = [[[stream SHA1Digest] copy] autorelease];
+    NSData *result = [[[stream digest] copy] autorelease];
 
     [stream release];
     return result;
@@ -139,7 +141,7 @@
         [stream release];
 
         [hasher close];
-        result = [[[hasher SHA1Digest] copy] autorelease];
+        result = [[hasher.digest copy] autorelease];
         [hasher release];
     }
     else
@@ -147,7 +149,7 @@
         KSSHA1Stream *hasher = [[KSSHA1Stream alloc] initWithURL:URL];
         
         // Run the runloop until done
-        while (!(result = [hasher SHA1Digest]))
+        while (!(result = hasher.digest))
         {
             [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
         }
@@ -217,7 +219,7 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     [super connectionDidFinishLoading:connection];
-    _completionBlock([self SHA1Digest], nil);
+    _completionBlock(self.digest, nil);
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error

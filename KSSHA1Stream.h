@@ -39,7 +39,8 @@
 }
 
 // nil until you call -close
-@property(nonatomic, copy, readonly) KSSHA1Digest *SHA1Digest;
+@property(nonatomic, copy, readonly) KSSHA1Digest *digest;
+- (NSData *)SHA1Digest; // backwards compatibility
 
 @end
 
