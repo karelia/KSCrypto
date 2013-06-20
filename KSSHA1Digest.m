@@ -69,7 +69,7 @@
     return [self isEqualToSHA1Digest:object];
 }
 
-- (NSUInteger)hash; { return *_md; }
+- (NSUInteger)hash; { return *((NSUInteger *)_md); }
 
 - (BOOL)isEqualToSHA1DigestData:(NSData *)data;
 {
