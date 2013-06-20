@@ -23,5 +23,6 @@
 - (NSString *)description;  // gives a fairly human-friendly version of the digest
 
 - (BOOL)isEqualToSHA1Digest:(KSSHA1Digest *)aDigest;
+- (BOOL)isEqualToSHA1DigestData:(NSData *)data;
 
 @end

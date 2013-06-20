@@ -58,7 +58,7 @@
 - (BOOL)isEqualToSHA1Digest:(KSSHA1Digest *)aDigest;
 {
     NSData *myData = [[NSData alloc] initWithBytesNoCopy:_md length:CC_SHA1_DIGEST_LENGTH freeWhenDone:NO];
-    BOOL result = [myData isEqualToData:aDigest.data];
+    BOOL result = [aDigest isEqualToSHA1DigestData:myData];
     [myData release];
     return result;
 }
@@ -70,6 +70,14 @@
 }
 
 - (NSUInteger)hash; { return _md; }
+
+- (BOOL)isEqualToSHA1DigestData:(NSData *)data;
+{
+    NSData *myData = [[NSData alloc] initWithBytesNoCopy:_md length:CC_SHA1_DIGEST_LENGTH freeWhenDone:NO];
+    BOOL result = [myData isEqualToData:data];
+    [myData release];
+    return result;
+}
 
 #pragma mark NSCopying
 
