@@ -149,11 +149,12 @@
         KSSHA1Stream *hasher = [[KSSHA1Stream alloc] initWithURL:URL];
         
         // Run the runloop until done
-        while (!(result = hasher.digest))
+        while (hasher.streamStatus < NSStreamStatusClosed)
         {
             [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
         }
-
+        
+        result = [[hasher.digest copy] autorelease];
         [hasher release];
     }
 
