@@ -164,9 +164,16 @@
 
 + (NSData *)SHA1DigestOfContentsOfURL:(NSURL *)URL; { return [self digestOfContentsOfURL:URL].data; }
 
-+ (void)SHA1HashContentsOfURL:(NSURL *)url completionHandler:(void (^)(KSSHA1Digest *digest, NSError *error))handler __attribute__((nonnull(1,2)));
++ (void)hashContentsOfURL:(NSURL *)url completionHandler:(void (^)(KSSHA1Digest *digest, NSError *error))handler __attribute__((nonnull(1,2)));
 {
     [[[KSAsyncSHA1Stream alloc] initWithURL:url completionHandler:handler] release];
+}
+
++ (void)SHA1HashContentsOfURL:(NSURL *)url completionHandler:(void (^)(NSData *digest, NSError *error))handler __attribute__((nonnull(1,2)));
+{
+    [self hashContentsOfURL:url completionHandler:^(KSSHA1Digest *digest, NSError *error) {
+        handler(digest.data, error);
+    }];
 }
 
 - (id)initWithURL:(NSURL *)URL;

@@ -53,7 +53,9 @@
 // Only suitable for calling from threads with a running runloop at present
 // Completion handler is called on an arbitrary thread/queue
 // digest is nil if failed to load for some reason, and then error should give some more info
-+ (void)SHA1HashContentsOfURL:(NSURL *)url completionHandler:(void (^)(KSSHA1Digest *digest, NSError *error))handler __attribute__((nonnull(1,2)));
+// +SHA1HashContentsOfURL:… method is legacy
++ (void)hashContentsOfURL:(NSURL *)url completionHandler:(void (^)(KSSHA1Digest *digest, NSError *error))handler __attribute__((nonnull(1,2)));
++ (void)SHA1HashContentsOfURL:(NSURL *)url completionHandler:(void (^)(NSData *digest, NSError *error))handler __attribute__((nonnull(1,2)));
 
 @end
 
