@@ -55,7 +55,7 @@
  @param URL The URL of the file to be hashed. May be anything Cocoa's URL Loading system supports.
  @result The SHA1 digest of the file at `URL`, or `nil` if accessing the file failed.
  */
-+ (NSData *)SHA1DigestOfContentsOfURL:(NSURL *)URL;
++ (NSData *)SHA1DigestOfContentsOfURL:(NSURL *)URL __attribute((nonnull(1)));
 
 /**
  Asynchronously hashes the contents of a file.
